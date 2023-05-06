@@ -2,18 +2,19 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { SignIn, SignOut, useSession, getProviders } from "next-auth/react";
+import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 
 const Nav = () => {
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
+  const { data: session } = useSession();
   const [providers, setProviders] = useState(null);
   const [toggleDropdown, setToggleDropdown] = useState(false);
 
   useEffect(() => {
-    async () => {
+    const setUpProviders = async () => {
       const response = await getProviders();
       setProviders(response);
     };
+    setUpProviders();
   }, []);
 
   return (
@@ -31,7 +32,7 @@ const Nav = () => {
       {/* Desktop Navigation */}
 
       <div className="sm:flex hidden">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex gap-3 md:gap-5">
             <Link href="/create-prompt" className="black_btn">
               Create Post
@@ -58,7 +59,7 @@ const Nav = () => {
                   key={provider.name}
                   className="black_btn"
                   onClick={() => {
-                    SignIn(provider.id);
+                    signIn(provider.id);
                   }}
                 >
                   Sign In
@@ -69,10 +70,10 @@ const Nav = () => {
       </div>
       {/* Mobile Navigation */}
       <div className="sm:hidden flex relative">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex">
             <Image
-              src="/assets/images/logo.svg"
+              src={session?.user.image}
               width={32}
               height={32}
               alt="logo"
@@ -101,7 +102,7 @@ const Nav = () => {
                   type="button"
                   onClick={() => {
                     setToggleDropdown(false);
-                    SignOut();
+                    signOut();
                   }}
                   className="mt-5 w-full black_btn"
                 >
@@ -119,7 +120,7 @@ const Nav = () => {
                   key={provider.name}
                   className="black_btn"
                   onClick={() => {
-                    SignIn(provider.id);
+                    signIn(provider.id);
                   }}
                 >
                   Sign In
