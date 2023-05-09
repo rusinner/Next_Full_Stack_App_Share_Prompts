@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-import Profile from "@components/profile";
+import ProfileComponent from "@components/ProfileComponent";
 
 const MyProfile = () => {
   const router = useRouter();
@@ -43,7 +43,7 @@ const MyProfile = () => {
   };
 
   return (
-    <Profile
+    <ProfileComponent
       name="My"
       desc="Welcome to your personalized profile page"
       data={posts}
